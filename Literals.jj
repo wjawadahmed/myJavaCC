@@ -1,0 +1,41 @@
+PARSER_BEGIN(Literals)
+
+import java.io.*;  // Import statement should be here
+
+public class Literals {
+    private static int count = 0; // Initialize count
+
+    public static void main(String[] args) throws Exception {
+        StringReader sr = new StringReader(args[0]);
+        SimpleCharStream scs = new SimpleCharStream(sr);
+        LiteralsTokenManager mgr = new LiteralsTokenManager(scs);
+
+        for (Token t = mgr.getNextToken(); t.kind != EOF; t = mgr.getNextToken()) {
+            if (t.kind == NO_UPPER) {
+                count++;  // Increment count for special token
+                System.out.println("Special token (Uppercase letters found): " + t.image);
+            } else if (t.kind == HELLO) {
+                count++;  // Increment count for hello token
+                System.out.println("Found token: " + t.image + " Number of Counts: " + count);
+            }
+        }
+        System.out.println("Total Uppercase tokens found: " + count); // Final count
+    }
+}
+
+PARSER_END(Literals)
+
+// Skip spaces
+SKIP : {
+    " "
+}
+
+// Special token to handle uppercase letters
+TOKEN : {
+    < NO_UPPER: (["A"-"Z"])+ >
+}
+
+// Define a token for the word "hello"
+TOKEN : {
+    < HELLO: "hello" >
+}
