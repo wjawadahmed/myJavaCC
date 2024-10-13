@@ -1,0 +1,33 @@
+
+PARSER_BEGIN(Lexical)
+
+import java.io.*;
+
+public class Lexical {
+    public static void main(String[] args) {
+        StringReader sr = new StringReader(args[0]);
+        SimpleCharStream scs = new SimpleCharStream(sr);
+        LexicalTokenManager mgr = new LexicalTokenManager(scs, IN_HEADER);
+        while ((mgr.getNextToken()).kind != mgr.EOF) {}
+ }
+}
+
+PARSER_END(Lexical)
+
+<IN_HEADER>
+MORE : {
+    < ~[] >  // Consume any characters except "-"
+}
+
+<IN_HEADER>
+SPECIAL_TOKEN : {
+    <HEADER_NOTES: "---"> : DEFAULT
+}
+
+// After "---", match "hello" in DEFAULT state
+<DEFAULT>
+TOKEN : {
+    <GREETING: "hello"> {
+        debugStream.println("Got a greeting, header was " + matchedToken.specialToken.image);
+    }
+}
